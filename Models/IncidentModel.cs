@@ -10,5 +10,7 @@ namespace IncidentSimulator.Models
         public string Severity { get; set; }      // LOW, MEDIUM, HIGH
         public DateTime CreatedAt { get; set; }   // When incident was created
         public string Status { get; set; }        // OPEN or RESOLVED
+
+        public DateTime? ResolvedAt { get; set; }
     }
 }

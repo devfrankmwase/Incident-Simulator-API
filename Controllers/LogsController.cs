@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using IncidentSimulator.Data;
+using IncidentSimulator.Models;
+using IncidentSimulator.Services;
 
 namespace IncidentSimulator.Controllers
 {
@@ -7,15 +8,20 @@ namespace IncidentSimulator.Controllers
     [Route("api/[controller]")]
     public class LogsController : ControllerBase
     {
-        [HttpGet]
-        public IActionResult GetLogs(string? level)
+        private readonly LogService _logService;
+
+        public LogsController(LogService logService)
         {
-            var logs = DataStore.Logs.AsQueryable();
-            if(!string.IsNullOrEmpty(level))
-            {
-                logs = logs.Where(l => l.Level.ToLower() == level.ToLower());
-            }
-            return Ok(logs.ToList());
+            _logService = logService;
         }
+        do that
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll() =>
+            Ok(await _logService.GetAllLogsAsync());
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] LogEntry log) =>
+            Ok(await _logService.CreateLogAsync(log));
     }
 }

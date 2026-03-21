@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using IncidentSimulator.Data;
 using IncidentSimulator.Models;
-using System.Linq;
+using IncidentSimulator.Services;
 
 namespace IncidentSimulator.Controllers
 {
@@ -9,31 +8,26 @@ namespace IncidentSimulator.Controllers
     [Route("api/[controller]")]
     public class IncidentsController : ControllerBase
     {
-        
+        private readonly IncidentService _incidentService;
+
+        public IncidentsController(IncidentService incidentService)
+        {
+            _incidentService = incidentService;
+        }
 
         [HttpGet]
-        public IActionResult GetIncidents(string? status,string? severity)
-        {
-            var incidents = DataStore.Incidents.AsQueryable();
+        public async Task<IActionResult> GetAll() =>
+            Ok(await _incidentService.GetAllIncidentsAsync());
 
-            if (!string.IsNullOrEmpty(status))
-            {
-                incidents = incidents.Where(i => i.Status.ToLower() == status.ToLower());
-            }
-            if (!string.IsNullOrEmpty(severity))
-            {
-                incidents = incidents.Where(i => i.Severity == severity);
-            }
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] IncidentModel incident) =>
+            Ok(await _incidentService.CreateIncidentAsync(incident));
 
-            return Ok(incidents.ToList());
-        }
         [HttpPut("{id}/resolve")]
-        public IActionResult ResolveIncident(int id)
+        public async Task<IActionResult> Resolve(int id)
         {
-            var incident = DataStore.Incidents.FirstOrDefault(i => i.Id == id);
+            var incident = await _incidentService.ResolveIncidentAsync(id);
             if (incident == null) return NotFound();
-
-            incident.Status = "RESOLVED";
             return Ok(incident);
         }
     }

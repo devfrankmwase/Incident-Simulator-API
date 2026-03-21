@@ -12,17 +12,20 @@ namespace IncidentSimulator.Controllers
         
 
         [HttpGet]
-        public IActionResult GetIncidents([FromQuery] string? status, [FromQuery] string? severity)
+        public IActionResult GetIncidents(string? status,string? severity)
         {
-            var incidents = DataStore.Incidents.AsEnumerable();
+            var incidents = DataStore.Incidents.AsQueryable();
 
             if (!string.IsNullOrEmpty(status))
-                incidents = incidents.Where(i => i.Status.Equals(status, StringComparison.OrdinalIgnoreCase));
-
+            {
+                incidents = incidents.Where(i => i.Status.ToLower() == status.ToLower());
+            }
             if (!string.IsNullOrEmpty(severity))
-                incidents = incidents.Where(i => i.Severity.Equals(severity, StringComparison.OrdinalIgnoreCase));
+            {
+                incidents = incidents.Where(i => i.Severity == severity);
+            }
 
-            return Ok(incidents);
+            return Ok(incidents.ToList());
         }
         [HttpPut("{id}/resolve")]
         public IActionResult ResolveIncident(int id)

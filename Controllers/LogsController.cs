@@ -8,9 +8,14 @@ namespace IncidentSimulator.Controllers
     public class LogsController : ControllerBase
     {
         [HttpGet]
-        public IActionResult GetLogs()
+        public IActionResult GetLogs(string? level)
         {
-            return Ok(DataStore.Logs);
+            var logs = DataStore.Logs.AsQueryable();
+            if(!string.IsNullOrEmpty(level))
+            {
+                logs = logs.Where(l => l.Level.ToLower() == level.ToLower());
+            }
+            return Ok(logs.ToList());
         }
     }
 }

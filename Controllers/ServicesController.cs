@@ -53,6 +53,8 @@ namespace IncidentSimulator.Controllers
             service.Status = updatedService.Status;
             service.LastChecked = DateTime.Now;
 
+            AddLog($"Service {service.Name} changed to {service.Status}", "INFO");
+
             // Automatic incident creation
             if (service.Status == "DOWN")
             {
@@ -69,6 +71,8 @@ namespace IncidentSimulator.Controllers
                         Status = "OPEN",
                         ResolvedAt = null
                     });
+
+                    AddLog($"Incident created for {service.Name}", "ERROR");
                 }
             }
 
@@ -82,6 +86,8 @@ namespace IncidentSimulator.Controllers
                     openIncident.Status = "RESOLVED";
                     openIncident.ResolvedAt = DateTime.Now;
                 }
+
+                AddLog($"Incident resolved for {service.Name}", "INFO");
             }
 
             return Ok(service);
@@ -99,6 +105,17 @@ namespace IncidentSimulator.Controllers
                 return "MEDIUM";
 
             return "LOW";
+        }
+
+        private void AddLog(string message, string level)
+        {
+            DataStore.Logs.Add(new LogEntry
+            {
+                Id = DataStore.Logs.Count + 1,
+                Message = message,
+                Level = level,
+                Timestamp = DateTime.Now
+            });
         }
     }
 }

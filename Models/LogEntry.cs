@@ -3,8 +3,8 @@
     public class LogEntry
     {
         public int Id { get; set; }
-        public string Message { get; set; }
-        public string Level { get; set; } // INFO, WARNING, ERROR
-        public DateTime Timestamp { get; set; }
+        public required string Message { get; set; }
+        public required string Level { get; set; } // INFO, WARNING, ERROR
+        public required DateTime Timestamp { get; set; }
     }
 }

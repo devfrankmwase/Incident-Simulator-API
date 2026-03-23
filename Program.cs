@@ -1,7 +1,7 @@
 using IncidentSimulator.Data;
 using IncidentSimulator.Models;
 using Microsoft.EntityFrameworkCore;
-using IncidentSimulator.Data;
+using IncidentSimulator.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,11 +9,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddScoped<IncidentSimulator.Services.ServiceService>();
+builder.Services.AddScoped<IncidentService>();
+builder.Services.AddScoped<LogService>();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")
     )
 );
+
 
 var app = builder.Build();
 

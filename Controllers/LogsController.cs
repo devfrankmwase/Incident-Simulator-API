@@ -14,14 +14,19 @@ namespace IncidentSimulator.Controllers
         {
             _logService = logService;
         }
-        do that
 
         [HttpGet]
-        public async Task<IActionResult> GetAll() =>
-            Ok(await _logService.GetAllLogsAsync());
+        public async Task<IActionResult> GetAll()
+        {
+            var logs = await _logService.GetAllLogsAsync();
+            return Ok(logs);
+        }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] LogEntry log) =>
-            Ok(await _logService.CreateLogAsync(log));
+        public async Task<IActionResult> Create([FromBody] LogEntry log)
+        {
+            var createdLog = await _logService.CreateLogAsync(log);
+            return Ok(createdLog);
+        }
     }
 }
